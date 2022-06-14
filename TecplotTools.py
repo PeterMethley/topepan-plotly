@@ -1,55 +1,63 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from plotly_default import go
 import matplotlib.cm as cm
 import os
 from glob import glob
 
 
 def read_tecplot(file_cat, file_num):
-    file_name = f'{file_cat}{file_num}.tec'
+    file_name = f"{file_cat}{file_num}.tec"
     with open(file_name) as f:
         f.readline()
         headerLine = f.readline()
-        headers=headerLine.split('"')
-        columnHeaders=[]
+        headers = headerLine.split('"')
+        columnHeaders = []
         for string in headers:
             if string.isspace() == False:
                 columnHeaders.append(string)
-        columnHeaders=columnHeaders[1:]   
-        df = pd.read_csv(file_name, sep=' ', skipinitialspace=True, skiprows=[0,1,2], names=columnHeaders)
-        df = df.replace('-','e-', regex=True)
-        df = df.replace('Ee','e', regex=True)
+        columnHeaders = columnHeaders[1:]
+        df = pd.read_csv(
+            file_name,
+            sep=" ",
+            skipinitialspace=True,
+            skiprows=[0, 1, 2],
+            names=columnHeaders,
+        )
+        df = df.replace("-", "e-", regex=True)
+        df = df.replace("Ee", "e", regex=True)
         for i in columnHeaders:
             df[i] = pd.to_numeric(df[i], downcast="float")
-        
+
         return df, columnHeaders
 
 
 def tecplot_2d(data_frame, scalar_name, vmin, vmax):
-    z = data_frame.pivot('Y', 'X', scalar_name)
+    z = data_frame.pivot("Y", "X", scalar_name)
     x, y = np.meshgrid(z.columns.values, z.index.values)
     levels = np.linspace(vmin, vmax, 16)
-    CS = plt.contourf(x, y, z, levels=levels, cmap=cm.viridis, extend='both')
+    CS = plt.contourf(x, y, z, levels=levels, cmap=cm.viridis, extend="both")
 
     colour_bar = plt.colorbar(CS)
-    plt.xlabel('y / m')
-    plt.ylabel('x / m')
+    plt.xlabel("y / m")
+    plt.ylabel("x / m")
     plt.show()
 
 
 def initialise1D(file_cat):
     df, column_headers = read_tecplot(file_cat, 1)
-    fig, ax = plt.subplots(figsize=(9,6))
-    line, = ax.plot(np.zeros_like(df['X']),df['X'])
+    fig, ax = plt.subplots(figsize=(9, 6))
+    line, = ax.plot(df['X'], np.zeros_like(df['X']))
+
     return fig, ax, line
 
 
 def data_cats(directory):
     os.chdir(directory)
-    f_list = glob('*.tec')
-    f_list = [i.rstrip('.tec') for i in f_list]
-    f_list = [i.rstrip('0123456789') for i in f_list]
+    f_list = glob("*.tec")
+    f_list = [i.rstrip(".tec") for i in f_list]
+    f_list = [i.rstrip("0123456789") for i in f_list]
     f_set = set(f_list)
     output_total = len(f_list) / len(f_set)
     return f_set, int(output_total)
@@ -62,7 +70,7 @@ def box_plot(file_cat, plot_var, max_time):
     series = np.empty(max_time)
     try:
         for i in np.arange(0, max_time):
-            df, column_headers = read_tecplot(file_cat, i+1)
+            df, column_headers = read_tecplot(file_cat, i + 1)
             series[i] = df[plot_var]
     except KeyError:
         return
@@ -73,7 +81,7 @@ def box_plot(file_cat, plot_var, max_time):
 def initialise_box(file_cat):
     df, column_headers = read_tecplot(file_cat, 1)
     fig, ax = plt.subplots(figsize=(9, 6))
-    ax.scatter(df['X'], np.zeros_like(df['X']))
+    ax.scatter(df["X"], np.zeros_like(df["X"]))
 
     return fig, ax
 
@@ -95,7 +103,7 @@ def plot_var_range(max_time, file_cat, plot_var):
     max_list = []
     for t in range(1, max_time + 1):
         df = read_tecplot(file_cat, t)[0]
-        s = pd.to_numeric(df.loc[:, plot_var], errors='coerce')
+        s = pd.to_numeric(df.loc[:, plot_var], errors="coerce")
         min_list.append(s.nsmallest(1).values)
         max_list.append(s.nlargest(1).values)
 
@@ -112,14 +120,14 @@ def import_time_series(file_name):
     column_headers = header_line[11:]
     column_headers = column_headers.replace("'", "")
     column_headers = column_headers.replace('"', "")
-    column_headers = column_headers.replace('(days)', "")
-    column_headers = column_headers.replace(' ', "")
-    column_headers = column_headers.rstrip('\n')
-    column_headers = column_headers.rstrip(',')
-    column_headers = column_headers.split(',')
+    column_headers = column_headers.replace("(days)", "")
+    column_headers = column_headers.replace(" ", "")
+    column_headers = column_headers.rstrip("\n")
+    column_headers = column_headers.rstrip(",")
+    column_headers = column_headers.split(",")
     print(column_headers)
 
-    df = pd.read_csv(file_name, engine='python', sep='\s+', skiprows=[0, 1])
+    df = pd.read_csv(file_name, engine="python", sep="\s+", skiprows=[0, 1])
     df.columns = column_headers
     return df, column_headers
 
@@ -129,6 +137,7 @@ def breakthrough(time, plot_var, data_frame):
     ax.plot(time, data_frame.loc[:, plot_var])
     return fig, ax
 
+
 def read_times(path):
     """return a dictionary of lines in a file, with the values as the line numbers.
 
@@ -136,21 +145,44 @@ def read_times(path):
     so line numbers in dictionary will map to the true line number in the file.
     """
     import re
-    
-    with open(path, 'r') as f:
+
+    with open(path, "r") as f:
         for line_num, line in enumerate(f):
             # input files edited on unix systems have newline characters that must be stripped.
             # also strip any trailing whitespace.
-            if line.startswith('spatial_profile'):
-                line = line.rstrip('\n ')
-                line = re.split('\s+', line)
+            if line.startswith("spatial_profile"):
+                line = line.rstrip("\n ")
+                line = re.split("\s+", line)
                 line.pop(0)
                 break
             else:
                 pass
 
         f.close()
-        
+
         line = [float(x) for x in line]
     return line
 
+def plot_bounds(lower, upper):
+    '''Returns a sensible axis range for a graph given the minimum and maximum values of the plotted data.'''
+    
+    plot_range = upper - lower
+
+    if upper > 0:
+        upper = upper * 1.1
+    elif upper < 0: 
+        upper = upper * 0.9
+    else:
+        upper = -lower
+    
+    if lower > 0:
+        if plot_range != 0 and lower / plot_range < 0.5:
+            lower = 0
+        else:
+            lower = lower * 0.9
+    elif lower < 0:
+        lower = lower * 1.1
+    else:
+        lower = -upper
+    
+    return lower, upper
