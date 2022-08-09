@@ -1,16 +1,17 @@
-file_name,friendly_name,prefix,suffix,units,starts_log,ignore
-AqRate,Aqueous reaction rate,Rate of,,mol dm<sup>−3</sup> s<sup>−1</sup>,False,False
-TotMineral,Component concentration in minerals,Concentration of,"in minerals ",mol kg<sup>−1</sup>,False,False
-affinity_term,Monod affinity term,Affinity term for,,,False,False
-aq_affinity,Monod biomass aqueous affinity term,Affinity term for,,,False,False
-area,Mineral surface area,Surface area of,,m<sup>2</sup>,False,False
-conc,Aqueous species concentration,Concentration of,,mol kg<sup>−1</sup>,True,False
-pH,pH,,,,False,False
-porosity,Porosity,,,,False,False
-rate,Mineral precipitation rate,Rate of,"precipitation ",mol m<sup>−3</sup> s<sup>−1</sup>,False,False
-saturation,Mineral supersaturation,Ω,,,False,False
-toperatio_aq,Aqueous isotope ratios,δ,,‰,False,False
-tortuosity,Tortuosity,,,,False,False
-totcon,Component concentration,Total concentration of,,mol kg<sup>−1</sup>,False,False
-velocity,Burial velocity,Burial velocity,,cm yr<sup>−1</sup>,False,False
-volume,Mineral volume fraction,Volume fraction of,,,False,False
+file_name;friendly_name;prefix;suffix;units;starts_log;ignore
+depth;Depth;;<i>z</i> ;cm;False;False
+AqRate;Aqueous reaction rate;Rate of;;mol dm<sup>−3</sup> s<sup>−1</sup>;False;False
+TotMineral;Component concentration in minerals;Concentration of;"in minerals ";mol kg<sup>−1</sup>;False;False
+affinity_term;Monod affinity term;Affinity term for;;;False;False
+aq_affinity;Monod biomass aqueous affinity term;Affinity term for;;;False;False
+area;Mineral surface area;Surface area of;;m<sup>2</sup>;False;False
+conc;Aqueous species concentration;Concentration of;;mol kg<sup>−1</sup>;True;False
+pH;pH;;;;False;False
+porosity;Porosity;;;;False;False
+rate;Mineral precipitation rate;Rate of;"precipitation ";mol m<sup>−3</sup> s<sup>−1</sup>;False;False
+saturation;Mineral supersaturation;Ω;;;False;False
+toperatio_aq;Aqueous isotope ratios;δ;;‰;False;False
+tortuosity;Tortuosity;;;;False;False
+totcon;Component concentration;Total concentration of;;mol kg<sup>−1</sup>;False;False
+velocity;Burial velocity;Burial velocity;;cm yr<sup>−1</sup>;False;False
+volume;Mineral volume fraction;Volume fraction of;;;False;False
